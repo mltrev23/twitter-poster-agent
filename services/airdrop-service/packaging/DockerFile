@@ -1,0 +1,58 @@
+# --- Builder Stage ---
+    FROM python:3.11-slim as builder
+
+    WORKDIR /app
+    
+    # Copy the requirements file into the container
+    COPY requirements.txt /app/
+    
+    # Create a virtual environment and upgrade pip, then install dependencies
+    RUN python -m venv /opt/venv && \
+        /opt/venv/bin/pip install --upgrade pip && \
+        /opt/venv/bin/pip install --no-cache-dir -r requirements.txt
+    
+    # --- Final Stage ---
+    FROM python:3.11-slim as final
+    
+    # Remove system pip and setuptools, update OS packages, and install tini for better process handling
+    RUN pip uninstall -y pip setuptools && \
+        apt-get update && \
+        apt-get upgrade -y && \
+        apt-get install -y --no-install-recommends tini && \
+        rm -rf /var/lib/apt/lists/*
+    
+    # Copy the virtual environment from the builder stage
+    COPY --from=builder /opt/venv /opt/venv
+    
+    WORKDIR /app
+    EXPOSE 4557
+    ENV PATH="/opt/venv/bin:$PATH"
+    
+    # Copy your application code (the subdirectory "airdrop-service") into /app/
+    COPY airdrop-service/ /app/
+    
+    # Set up non-root user and proper permissions
+    RUN rm -rf /opt/venv/lib/python3.11/site-packages/setuptools* && \
+        groupadd -g 1001 appuser && \
+        useradd -r -m -u 1001 -g appuser appuser && \
+        mkdir /tmp/logs && \
+        chown -R appuser:appuser /app
+    
+    USER appuser
+    ENV PYTHONUNBUFFERED=1
+    
+    ARG IS_LOCAL_BUILD="0"
+    ARG BUILD_VERSION="dev"
+    ARG BUILD_HASH="unknown"
+    ARG BUILD_NUMBER="1"
+    
+    ENV APP_VERSION=$BUILD_VERSION
+    ENV BUILD_HASH=$BUILD_HASH
+    ENV NUM_WORKERS=4
+    ENV MAX_RESTARTS=5
+    ENV PORT=4557
+    
+    # Use tini for proper signal handling and start your application
+    ENTRYPOINT ["/usr/bin/tini", "--"]
+    CMD ["python", "main.py"]
+    
