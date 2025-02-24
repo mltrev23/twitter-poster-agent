@@ -6,6 +6,7 @@ import base64
 import logging
 from PIL import Image
 from typing import Union
+from utils.hyperbolic_api import make_llama_inference, make_sdxl_inference
 
 class TwitterManager:
     def __init__(self):
