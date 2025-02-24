@@ -6,16 +6,16 @@ import base64
 import logging
 from PIL import Image
 from typing import Union
-from utils.hyperbolic_api import make_llama_inference, make_sdxl_inference
+from utils.hyperbolic_api import make_hyperbolic_llama_inference, make_hyperbolic_sdxl_inference
 
 class TwitterManager:
     def __init__(self):
         """Initialize the bot with OAuth 2.0 authentication."""
-        self.API_KEY = os.getenv("API_KEY")
-        self.API_SECRET_KEY = os.getenv("API_SECRET_KEY")
-        self.ACCESS_TOKEN = os.getenv("ACCESS_TOKEN")
-        self.ACCESS_TOKEN_SECRET = os.getenv("ACCESS_TOKEN_SECRET")
-        self.BEARER_TOKEN = os.getenv("BEARER_TOKEN")
+        self.API_KEY = os.getenv("TWITTER_API_KEY")
+        self.API_SECRET_KEY = os.getenv("TWITTER_API_SECRET_KEY")
+        self.ACCESS_TOKEN = os.getenv("TWITTER_ACCESS_TOKEN")
+        self.ACCESS_TOKEN_SECRET = os.getenv("TWITTER_ACCESS_TOKEN_SECRET")
+        self.BEARER_TOKEN = os.getenv("TWITTER_BEARER_TOKEN")
 
         # Authenticate using OAuth 1.0
         self.tweepy_auth = tweepy.OAuth1UserHandler(

@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 import logging
 
 
-def make_llama_inference(messages):
+def make_hyperbolic_llama_inference(messages):
     load_dotenv()
 
     hyperbolic_api_key = os.environ.get('HYPERBOLIC_API_KEY')
@@ -25,7 +25,7 @@ def make_llama_inference(messages):
 
     return __make_safe_hyperbolic_inference(url, headers, data)
 
-def make_sdxl_inference(prompt):
+def make_hyperbolic_sdxl_inference(prompt):
     load_dotenv()
 
     hyperbolic_api_key = os.environ.get('HYPERBOLIC_API_KEY')
