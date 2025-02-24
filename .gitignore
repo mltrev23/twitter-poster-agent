@@ -1,2 +1,4 @@
 .env
 botify
+venv/
+.venv/

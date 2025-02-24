@@ -1,5 +1,8 @@
 from agentipy import SolanaAgentKit
 from typing import Optional
+from ..tools.TweetManager import TwitterManager
+from ..tools.GoogleSearch import GoogleSearchManager
+from PIL import Image
 
 class BotifyAgentKit(SolanaAgentKit):
 
@@ -32,3 +35,15 @@ class BotifyAgentKit(SolanaAgentKit):
         stork_api_key: Optional[str] = None,
         generate_wallet: bool = False
         )
+    
+    def generate_twitter_image(prompt: str):
+        image = TwitterManager.generate_image(prompt)
+    
+    def write_tweet(prompt: str, context: str):
+        text = TwitterManager.write_tweet(prompt, context)
+    
+    def search_google(topic: str):
+        conetext = GoogleSearchManager.get_google_search_data(topic)
+
+    def post_tweet(text: str, image: Image.Image):
+        TwitterManager.post_tweet(text, image)
