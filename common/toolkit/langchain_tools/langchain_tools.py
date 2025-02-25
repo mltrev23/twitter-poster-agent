@@ -9,15 +9,19 @@ from langchain.callbacks.manager import (
     CallbackManagerForToolRun,
 )
 
+
 class TweetGenerationInput(BaseModel):
     prompt: str = Field(description="topic for a tweet")
     context: str = Field(description="relevant context of prompt")
 
+
 class GoogleSearchInput(BaseModel):
     topic: str = Field(description="topic for google search")
 
+
 class ArtGenerationInput(BaseModel):
     prompt: str = Field(description="topic for an image")
+
 
 class PostTweetInput(BaseModel):
     text: str = Field(description="text of tweet")
@@ -30,7 +34,10 @@ class TweetGenerationTool(BaseTool):
     args_schema: Type[BaseModel] = TweetGenerationInput
 
     def _run(
-        self, prompt: str, context: str, run_manager: Optional[CallbackManagerForToolRun] = None
+        self,
+        prompt: str,
+        context: str,
+        run_manager: Optional[CallbackManagerForToolRun] = None,
     ) -> str:
         """Use the tool."""
         botify_agent_kit = BotifyAgentKit()
@@ -41,6 +48,7 @@ class TweetGenerationTool(BaseTool):
     ) -> str:
         """Use the tool asynchronously."""
         raise NotImplementedError("TweetGenerationTool does not support async")
+
 
 class GoogleSearchTool(BaseTool):
     name = "search_google"
@@ -60,6 +68,7 @@ class GoogleSearchTool(BaseTool):
         """Use the tool asynchronously."""
         raise NotImplementedError("GoogleSearchTool does not support async")
 
+
 class ArtGenerationTool(BaseTool):
     name = "art_generater"
     description = "useful tool to create an image"
@@ -78,13 +87,17 @@ class ArtGenerationTool(BaseTool):
         """Use the tool asynchronously."""
         raise NotImplementedError("ArtGenerationTool does not support async")
 
+
 class PostTweetTool(BaseTool):
     name = "tweet_poster"
     description = "useful tool to create an image"
     args_schema: Type[BaseModel] = PostTweetInput
 
     def _run(
-        self, text: str, image: Image.Image, run_manager: Optional[CallbackManagerForToolRun] = None
+        self,
+        text: str,
+        image: Image.Image,
+        run_manager: Optional[CallbackManagerForToolRun] = None,
     ) -> str:
         """Use the tool."""
         botify_agent_kit = BotifyAgentKit()

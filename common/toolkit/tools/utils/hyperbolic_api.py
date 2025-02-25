@@ -1,4 +1,5 @@
 """Module providing hyperbolic api call functions"""
+
 import os
 import time
 import logging

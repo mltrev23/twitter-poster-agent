@@ -3,6 +3,7 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_openai import OpenAIEmbeddings
 from typing import Optional
 
+
 class EmbeddingProvider:
 
     def __init__(self, embedding_provider, model_name: Optional[str] = None):

@@ -6,10 +6,13 @@ from langchain_community.document_loaders import WebBaseLoader
 
 load_dotenv()
 
+
 class GoogleSearchManager:
     def __init__(self, api_key=None, search_engine_id=None):
-        self.api_key = api_key or os.environ.get('GOOGLE_CLOUD_API_KEY')
-        self.search_engine_id = search_engine_id or os.environ.get('GOOGLE_SEARCH_ENGINE_ID')
+        self.api_key = api_key or os.environ.get("GOOGLE_CLOUD_API_KEY")
+        self.search_engine_id = search_engine_id or os.environ.get(
+            "GOOGLE_SEARCH_ENGINE_ID"
+        )
 
     def google_search(self, query, num_results=5):
         """Fetches search results using Google Custom Search API."""
@@ -18,7 +21,7 @@ class GoogleSearchManager:
             "q": query,
             "key": self.api_key,
             "cx": self.search_engine_id,
-            "num": num_results
+            "num": num_results,
         }
 
         response = requests.get(url, params=params)
@@ -50,12 +53,16 @@ class GoogleSearchManager:
 
                 # Extract full page content
                 detailed_content = self.fetch_page_content_with_langchain(url)
-                logging.info(f"Extracted Content:\n{detailed_content[:100]}...\n{'-'*80}")
-                context.append({
-                    'title': title,
-                    'snippet': snippet,
-                    'url': url,
-                    'context': detailed_content
-                })
+                logging.info(
+                    f"Extracted Content:\n{detailed_content[:100]}...\n{'-'*80}"
+                )
+                context.append(
+                    {
+                        "title": title,
+                        "snippet": snippet,
+                        "url": url,
+                        "context": detailed_content,
+                    }
+                )
 
         return str(context)
