@@ -1,7 +1,8 @@
+"""Module for google search tool implementation"""
 import os
-import requests
-from dotenv import load_dotenv
 import logging
+from dotenv import load_dotenv
+import requests
 from langchain_community.document_loaders import WebBaseLoader
 
 load_dotenv()
@@ -24,11 +25,11 @@ class GoogleSearchManager:
             "num": num_results,
         }
 
-        response = requests.get(url, params=params)
+        response = requests.get(url, params=params, timeout=60)
         if response.status_code == 200:
             return response.json().get("items", [])
         else:
-            logging.error(f"Error: {response.status_code} {response.text}")
+            logging.error("Error: %s %s", response.status_code, response.text)
             return []
 
     def fetch_page_content_with_langchain(self, url):
@@ -37,7 +38,6 @@ class GoogleSearchManager:
         documents = loader.load()
         return str(documents)
 
-    @staticmethod
     def get_google_search_data(self, query: str):
         """Performs a Google search and fetches detailed content."""
         results = self.google_search(query, 5)
@@ -49,12 +49,12 @@ class GoogleSearchManager:
                 snippet = item.get("snippet")
                 url = item.get("link")
 
-                logging.info(f"\n{idx}. {title}\n{snippet}\n{url}\n")
+                logging.info("\n%s. %s\n%s\n%s\n", idx, title, snippet, url)
 
                 # Extract full page content
                 detailed_content = self.fetch_page_content_with_langchain(url)
                 logging.info(
-                    f"Extracted Content:\n{detailed_content[:100]}...\n{'-'*80}"
+                    "Extracted Content:\n%s...\n{'-'*80}", detailed_content[:100]
                 )
                 context.append(
                     {

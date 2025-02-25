@@ -1,8 +1,9 @@
+"""Module for agent kit"""
 from typing import Optional
 from agentipy import SolanaAgentKit
 from PIL import Image
-from tools.TweetManager import TwitterManager
-from tools.GoogleSearch import GoogleSearchManager
+from common.toolkit.tools.tweet_manager import TwitterManager
+from common.toolkit.tools.google_search import GoogleSearchManager
 
 
 class BotifyAgentKit(SolanaAgentKit):
