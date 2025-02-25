@@ -35,6 +35,7 @@ class TwitterManager:
             access_token_secret=self.ACCESS_TOKEN_SECRET
         )
 
+    @staticmethod
     def generate_image(prompt, enhance = False):
         """Uses SDXL to generate an image based on the enhanced prompt."""
         

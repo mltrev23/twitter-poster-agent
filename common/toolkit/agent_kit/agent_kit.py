@@ -37,13 +37,17 @@ class BotifyAgentKit(SolanaAgentKit):
         )
     
     def generate_twitter_image(prompt: str):
-        image = TwitterManager.generate_image(prompt)
+        return TwitterManager.generate_image(prompt)
     
     def write_tweet(prompt: str, context: str):
-        text = TwitterManager.write_tweet(prompt, context)
+        return TwitterManager.write_tweet(prompt, context)
     
-    def search_google(topic: str):
-        conetext = GoogleSearchManager.get_google_search_data(topic)
+    def search_google(self, topic: str):
+        google_search_manager = GoogleSearchManager()
+        context = google_search_manager.get_google_search_data(topic)
+        # Return or use the search context as needed
+        return context
 
-    def post_tweet(text: str, image: Image.Image):
-        TwitterManager.post_tweet(text, image)
+    def post_tweet(self, text: str, image: bytes):
+        tweet_manager = TwitterManager()
+        tweet_manager.post_tweet(text, image)

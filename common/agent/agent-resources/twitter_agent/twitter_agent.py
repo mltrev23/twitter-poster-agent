@@ -1,8 +1,10 @@
-""" An agent posting tweet """
-
-from typing import TypedDict, Any  # Standard library import
+"""An agent posting tweet"""
+import os
+import operator
+from typing import TypedDict, Any, Annotated # Standard library import
 import yaml
 from langgraph.graph import StateGraph, END, START  # Third-party import
+
 
 def load_yaml_config(file_path: str) -> Any:
     """Loads a YAML configuration file.
@@ -13,32 +15,37 @@ def load_yaml_config(file_path: str) -> Any:
     Returns:
         Any: The content of the YAML file as a Python object.
     """
-    with open(file_path, 'r', encoding='utf-8') as file:  # Specified encoding
+    with open(file_path, "r", encoding="utf-8") as file:  # Specified encoding
         config = yaml.safe_load(file)
     return config
 
 
 class TwitterAgentState(TypedDict):
     """Represents the state of the Twitter agent."""
-    topic: str
+
+    prompt: Annotated[list[str], operator.add]
     context: str
     image: str
     tweet: str
 
+
 class TwitterAgent:
     """A class to manage the workflow of generating and posting tweets."""
 
-    config = load_yaml_config('twitter_agent.yaml')
+    current_file_path = os.path.dirname(__file__)
+    config_path = os.path.join(current_file_path, 'twitter_agent.yaml')
+    config = load_yaml_config(config_path)
 
     def __init__(self, model, tools, system_prompt=""):
         """Initializes the TwitterAgent with model, tools, and system prompt.
-        
+
         Args:
             model: The model used for generating content.
             tools: A list of tools available for the agent.
             system_prompt: An optional prompt for the system.
         """
         self.tools = {t.name: t for t in tools}
+        print(self.tools)
         self.model = model.bind_tools(tools)
         self.system_prompt = system_prompt
 
@@ -52,14 +59,14 @@ class TwitterAgent:
         """
         graph = StateGraph(TwitterAgentState)
 
-        graph.add_node("retrieve_google", self.retrieve_google)
+        graph.add_node("search_google", self.search_google)
         graph.add_node("write_tweet", self.write_tweet)
         graph.add_node("enhance_prompt", self.enhance_prompt)
         graph.add_node("art_generate", self.art_generate)
         graph.add_node("post_tweet", self.post_tweet)
 
-        graph.add_edge(START, "retrieve_google")
-        graph.add_edge("retrieve_google", "write_tweet")
+        graph.add_edge(START, "search_google")
+        graph.add_edge("search_google", "write_tweet")
         graph.add_edge(START, "enhance_prompt")
         graph.add_edge("enhance_prompt", "art_generate")
         graph.add_edge("write_tweet", "post_tweet")
@@ -69,8 +76,8 @@ class TwitterAgent:
         self.graph = graph.compile()
         return self.graph
 
-    def retrieve_google(self, state: TwitterAgentState):
-        """Retrieves context from Google based on the topic.
+    def search_google(self, state: TwitterAgentState):
+        """Retrieves context from Google based on the prompt.
 
         Args:
             state: The current state of the Twitter agent.
@@ -78,12 +85,12 @@ class TwitterAgent:
         Returns:
             Updated state with retrieved context.
         """
-        topic = state['topic']
-        context = self.tools['retrieve_google'].invoke(topic)
-        return {'topic': topic, 'context': context}
+        prompt = state["prompt"][-1]
+        context = self.tools["search_google"].invoke(prompt)
+        return {"prompt": [prompt], "context": context}
 
     def write_tweet(self, state: TwitterAgentState):
-        """Writes a tweet based on the topic and context.
+        """Writes a tweet based on the prompt and context.
 
         Args:
             state: The current state of the Twitter agent.
@@ -91,26 +98,26 @@ class TwitterAgent:
         Returns:
             Updated state with the generated tweet.
         """
-        topic, context = state['topic'], state['context']
-        tweet = self.tools['tweet_writer'].invoke(topic, context)
-        return {'topic': topic, 'context': context, 'tweet': tweet}
+        prompt, context = state["prompt"][-1], state["context"]
+        tweet = self.tools["tweet_writer"].invoke({'prompt': prompt, 'context': context})
+        return {"tweet": tweet}
 
     def enhance_prompt(self, state: TwitterAgentState):
-        """Enhances the topic prompt using the model.
+        """Enhances the prompt prompt for better image generation using the model.
 
         Args:
             state: The current state of the Twitter agent.
 
         Returns:
-            Updated state with the enhanced topic.
+            Updated state with the enhanced prompt.
         """
-        topic = state['topic']
-        enhance_prompt = self.config['agent']['prompt_enhancer'].format(topic=topic)
-        new_topic = self.model.invoke(enhance_prompt)
-        return {'topic': new_topic}
+        prompt = state["prompt"][-1]
+        enhance_prompt = self.config["agent"]["prompt_enhancer"].format(prompt=prompt)
+        new_prompt = self.model.invoke(enhance_prompt)
+        return {"prompt": [new_prompt]}
 
     def art_generate(self, state: TwitterAgentState):
-        """Generates art based on the topic.
+        """Generates art based on the prompt.
 
         Args:
             state: The current state of the Twitter agent.
@@ -118,9 +125,9 @@ class TwitterAgent:
         Returns:
             Updated state with the generated image.
         """
-        topic = state['topic']
-        image = self.tools['art_generate'].invoke(topic)
-        return {'topic': topic, 'image': image}
+        prompt = state["prompt"][-1]
+        image = self.tools["art_generator"].invoke(prompt)
+        return {"image": image}
 
     def post_tweet(self, state: TwitterAgentState):
         """Posts the tweet along with an image.
@@ -131,6 +138,6 @@ class TwitterAgent:
         Returns:
             The original state after posting the tweet.
         """
-        tweet, image = state['tweet'], state['image']
-        self.tools['tweet_poster'].invoke(tweet, image)
+        tweet, image = state["tweet"], state["image"]
+        self.tools["tweet_poster"].invoke({'tweet': tweet, 'image': image})
         return state
