@@ -99,7 +99,7 @@ class TwitterAgent:
         return {"topic": topic, "context": context, "tweet": tweet}
 
     def enhance_prompt(self, state: TwitterAgentState):
-        """Enhances the topic prompt using the model.
+        """Enhances the topic prompt for better image generation using the model.
 
         Args:
             state: The current state of the Twitter agent.

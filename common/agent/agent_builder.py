@@ -50,15 +50,6 @@ class AgentBuilder:
             "strive to provide clarity and actionable insights."
         )
 
-    @staticmethod
-    def create_tweet_gen_prompt(topic: str) -> str:
-        return (
-            f"1. Search Google for context about \"{topic}\".\n"
-            f"2. Generate a tweet based on the context.\n"
-            f"3. Generate an image related to \"{topic}\".\n"
-            f"4. Post the tweet and image to Twitter."
-        )
-
     def create_retriever_agent(
         self, retriever: Any, model_provider: str = "open-ai", model_name: str = "gpt-3.5-turbo"
     ) -> 'Agent':
@@ -74,9 +65,6 @@ class AgentBuilder:
         # Define model
         model = self.create_chat_model(provider=model_provider, name=model_name)
 
-        # Build a prompt
-        prompt = self.create_tweet_gen_prompt(topic)
-
         # Load tools
         google_retriever = self.create_google_retriever_tool()
         art_generator = self.create_art_generation_tool()
@@ -85,7 +73,7 @@ class AgentBuilder:
 
         self.tools.extend([google_retriever, tweet_generator, art_generator, tweet_poster])
 
-        return Agent(model, self.tools, system=prompt)
+        return TwitterAgent(model, self.tools)
 
     @staticmethod
     def create_art_generation_tool() -> ArtGenerationTool:

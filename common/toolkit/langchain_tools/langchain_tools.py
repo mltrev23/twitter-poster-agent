@@ -66,7 +66,12 @@ class GoogleSearchTool(BaseTool):
     args_schema: Type[BaseModel] = GoogleSearchInput
 
     def _run(self, *args, **kwargs) -> str:
-        """Use the tool."""
+        """
+        Google search tool call function 
+
+        Required Arguments:
+            - topic: str    # topic to search google
+        """
         topic = kwargs.get('topic')
 
         botify_agent_kit = BotifyAgentKit()
@@ -83,7 +88,12 @@ class ArtGenerationTool(BaseTool):
     args_schema: Type[BaseModel] = ArtGenerationInput
 
     def _run(self, *args, **kwargs) -> str:
-        """Use the tool."""
+        """
+        Image generation tool call function 
+
+        Required Arguments:
+            - prompt: str    # prompt or topic for image generation
+        """
         prompt = kwargs.get('prompt')
 
         botify_agent_kit = BotifyAgentKit()
@@ -100,7 +110,13 @@ class PostTweetTool(BaseTool):
     args_schema: Type[BaseModel] = PostTweetInput
 
     def _run(self, *args, **kwargs) -> str:
-        """Use the tool."""
+        """
+        Post tweet on twitter
+
+        Required Arguments:
+            - text: str    # text data of tweet
+            - image: str   # image on tweet
+        """
         text = kwargs.get('text')
         image = kwargs.get('image')
 
