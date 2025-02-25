@@ -35,38 +35,11 @@ class TwitterManager:
             access_token_secret=self.ACCESS_TOKEN_SECRET
         )
 
-    def enhance_prompt(user_prompt):
-        system_prompt = f"""
-        You are an AI that enhances image generation prompts.
-        Take a short user input and transform it into a highly detailed and artistic prompt.
-
-        Good art description examples: A serene mountain landscape at sunrise, no buildings, no people. 
-        A bustling city street at dusk, withglowing street lamps and a vivid sunset in the background. 
-        An ancient library lit only by the warm, soft glow of a fireplace, casting shadows across the room. 
-        
-        Convert the query into a vivid, detailed description that follows the formats above.    
-        """
-        
-        complete_prompt = [
-            {'role': 'system', 'content': system_prompt},
-            {'role': 'user', 'content': user_prompt}
-        ]
-
-        try:
-            response_body = make_hyperbolic_llama_inference(complete_prompt)
-            
-            enhanced_prompt = response_body['choices'][0]['message']['content'].strip()
-            return enhanced_prompt
-
-        except Exception as e:
-            print(f"Error enhancing prompt: {e}")
-            return user_prompt  # Return original prompt if error occurs
-
     def generate_image(prompt, enhance = False):
         """Uses SDXL to generate an image based on the enhanced prompt."""
         
-        if enhance:
-            prompt = TwitterManager.enhance_prompt(prompt)
+        # if enhance:
+        #     prompt = TwitterManager.enhance_prompt(prompt)
 
         try:
             response_body = make_hyperbolic_sdxl_inference(prompt)

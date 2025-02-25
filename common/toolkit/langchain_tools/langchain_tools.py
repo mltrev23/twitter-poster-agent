@@ -25,7 +25,7 @@ class PostTweetInput(BaseModel):
 
 
 class TweetGenerationTool(BaseTool):
-    name = "Tweet generation tool"
+    name = "tweet_writer"
     description = "useful tool to create tweet"
     args_schema: Type[BaseModel] = TweetGenerationInput
 
@@ -43,7 +43,7 @@ class TweetGenerationTool(BaseTool):
         raise NotImplementedError("TweetGenerationTool does not support async")
 
 class GoogleSearchTool(BaseTool):
-    name = "Search google with certain topic"
+    name = "search_google"
     description = "useful tool to search google with topic and get context"
     args_schema: Type[BaseModel] = GoogleSearchInput
 
@@ -61,7 +61,7 @@ class GoogleSearchTool(BaseTool):
         raise NotImplementedError("GoogleSearchTool does not support async")
 
 class ArtGenerationTool(BaseTool):
-    name = "Tweet image generation tool"
+    name = "art_generater"
     description = "useful tool to create an image"
     args_schema: Type[BaseModel] = ArtGenerationInput
 
@@ -79,7 +79,7 @@ class ArtGenerationTool(BaseTool):
         raise NotImplementedError("ArtGenerationTool does not support async")
 
 class PostTweetTool(BaseTool):
-    name = "Tweet image generation tool"
+    name = "tweet_poster"
     description = "useful tool to create an image"
     args_schema: Type[BaseModel] = PostTweetInput
 

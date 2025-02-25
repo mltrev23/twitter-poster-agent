@@ -8,6 +8,8 @@ from langchain_community.tools.tavily_search import TavilySearchResults
 
 from toolkit.langchain_tools.langchain_tools import TweetGenerationTool, ArtGenerationTool, GoogleSearchTool, PostTweetTool
 
+from .agent_resources.twitter_agent.twitter_agent import TwitterAgent
+
 class AgentState(TypedDict):
     messages: Annotated[list[AnyMessage], operator.add]
 
