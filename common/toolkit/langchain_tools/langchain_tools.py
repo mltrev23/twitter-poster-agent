@@ -3,8 +3,8 @@ from typing import Optional, Type
 
 # Third-party imports
 from pydantic import BaseModel, Field
-from langchain.tools import BaseTool
 from PIL import Image
+from langchain.tools import BaseTool
 from langchain.callbacks.manager import (
     AsyncCallbackManagerForToolRun,
     CallbackManagerForToolRun,
@@ -39,7 +39,7 @@ class TweetGenerationTool(BaseTool):
 
     def _run(self, *args, **kwargs):
         """
-        Twitter generation tool call function 
+        Twitter generation tool call function
 
         Required Arguments:
             - prompt: str    # prompt or topic for tweet generation
@@ -51,7 +51,7 @@ class TweetGenerationTool(BaseTool):
 
         if prompt is None:
             return 'This is my test tweet!'
-        
+
         botify_agent_kit = BotifyAgentKit()
         return botify_agent_kit.write_tweet(prompt, context)
 
@@ -67,7 +67,7 @@ class GoogleSearchTool(BaseTool):
 
     def _run(self, *args, **kwargs) -> str:
         """
-        Google search tool call function 
+        Google search tool call function
 
         Required Arguments:
             - topic: str    # topic to search google
@@ -89,7 +89,7 @@ class ArtGenerationTool(BaseTool):
 
     def _run(self, *args, **kwargs) -> str:
         """
-        Image generation tool call function 
+        Image generation tool call function
 
         Required Arguments:
             - prompt: str    # prompt or topic for image generation

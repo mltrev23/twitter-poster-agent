@@ -4,9 +4,15 @@ ignore=tests,venv,*.pyc
 
 [MESSAGES CONTROL]
 # Disable specific warnings
-disable=C0111,  # Missing docstring
-         W0611,  # Unused import
-         E1101,  # Undefined variable
+disable=undefined-variable,
+        too-few-public-methods,
+        useless-super-delegation,
+        unused-argument,
+        too-many-instance-attributes,
+        unused-import,
+        missing-module-docstring,
+        missing-function-docstring,
+        missing-class-docstring
 
 [FORMAT]
 # Maximum number of characters on a single line
@@ -30,4 +36,3 @@ logging-modules=logging
 
 [DESIGN]
 max-args=15
-max-positional-arguments=15

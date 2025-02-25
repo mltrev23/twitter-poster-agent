@@ -1,10 +1,9 @@
+from typing import List, Optional
+
 from langchain.retrievers import EnsembleRetriever
 from langchain_community.retrievers import BM25Retriever
 from langchain_core.vectorstores import VectorStoreRetriever
 from langchain_core.documents import Document
-
-
-from typing import List, Optional
 
 
 def default_preprocessing_func(text: str) -> List[str]:

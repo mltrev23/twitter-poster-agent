@@ -26,10 +26,18 @@ def make_hyperbolic_llama_inference(messages, max_tokens=512, temperature=0.9, t
         "top_p": top_p,
     }
 
-    return __make_safe_hyperbolic_inference(url, headers, data)
+    return _make_safe_hyperbolic_inference(url, headers, data)
 
 
-def make_hyperbolic_sdxl_inference(prompt, steps=30, cfg_scale=5, enable_refiner=False, width=1024, height=1024, backend='auto'):
+def make_hyperbolic_sdxl_inference(
+        prompt,
+        steps=30,
+        cfg_scale=5,
+        enable_refiner=False,
+        width=1024,
+        height=1024,
+        backend='auto'
+    ):
     """A function that calls flux.1 dev via hyperbolic api"""
     load_dotenv()
 
@@ -51,10 +59,10 @@ def make_hyperbolic_sdxl_inference(prompt, steps=30, cfg_scale=5, enable_refiner
         "backend": backend,
     }
 
-    return __make_safe_hyperbolic_inference(url, headers, data)
+    return _make_safe_hyperbolic_inference(url, headers, data)
 
 
-def __make_safe_hyperbolic_inference(url, headers, data, attempts=5):
+def _make_safe_hyperbolic_inference(url, headers, data, attempts=5):
     for attempt in range(attempts):
         try:
             response = requests.post(url, headers=headers, json=data, timeout=60)

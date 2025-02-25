@@ -1,7 +1,7 @@
+from typing import Optional
 from langchain_nvidia_ai_endpoints import NVIDIAEmbeddings
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_openai import OpenAIEmbeddings
-from typing import Optional
 
 
 class EmbeddingProvider:

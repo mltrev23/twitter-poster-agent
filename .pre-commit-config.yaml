@@ -1,0 +1,6 @@
+repos:
+  - repo: https://github.com/pre-commit/mirrors-pylint
+    rev: v3.0.0a5  # Change this to the latest version of pylint
+    hooks:
+      - id: pylint
+        args: ["--rcfile=.pylintrc", "--disable=import-error"]

@@ -28,9 +28,9 @@ class GoogleSearchManager:
         response = requests.get(url, params=params, timeout=60)
         if response.status_code == 200:
             return response.json().get("items", [])
-        else:
-            logging.error("Error: %s %s", response.status_code, response.text)
-            return []
+
+        logging.error("Error: %s %s", response.status_code, response.text)
+        return []
 
     def fetch_page_content_with_langchain(self, url):
         """Fetches the full page content using Langchain's WebBaseLoader."""

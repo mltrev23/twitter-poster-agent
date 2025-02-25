@@ -60,7 +60,7 @@ class AgentBuilder:
         return Agent(model, self.tools, system=prompt)
 
     def create_twitter_agent(
-        self, topic: str, model_provider: str = "open-ai", model_name: str = "gpt-3.5-turbo"
+        self, model_provider: str = "open-ai", model_name: str = "gpt-3.5-turbo"
     ) -> 'Agent':
         # Define model
         model = self.create_chat_model(provider=model_provider, name=model_name)
