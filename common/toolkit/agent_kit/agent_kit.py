@@ -21,25 +21,26 @@ class BotifyAgentKit(SolanaAgentKit):
         generate_wallet: bool = False):
         
         
-        super().init(
-            private_key,
-            rpc_url,
-            openai_api_key,
-            helius_api_key,
-            helius_rpc_url,
-            backpack_api_key,
-            backpack_api_secret,
-            quicknode_rpc_url,
-            jito_block_engine_url,
-            jito_uuid,
-            stork_api_key,
-            generate_wallet
-        )
+        # super().__init__(
+        #     private_key,
+        #     rpc_url,
+        #     openai_api_key,
+        #     helius_api_key,
+        #     helius_rpc_url,
+        #     backpack_api_key,
+        #     backpack_api_secret,
+        #     quicknode_rpc_url,
+        #     jito_block_engine_url,
+        #     jito_uuid,
+        #     stork_api_key,
+        #     generate_wallet
+        # )
+        pass
     
-    def generate_twitter_image(prompt: str):
+    def generate_twitter_image(self, prompt: str):
         return TwitterManager.generate_image(prompt)
     
-    def write_tweet(prompt: str, context: str):
+    def write_tweet(self, prompt: str, context: str):
         return TwitterManager.write_tweet(prompt, context)
     
     def search_google(self, topic: str):

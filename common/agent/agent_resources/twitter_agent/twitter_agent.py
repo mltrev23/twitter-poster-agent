@@ -25,7 +25,7 @@ class TwitterAgentState(TypedDict):
 
     prompt: Annotated[list[str], operator.add]
     context: str
-    image: str
+    image: bytes
     tweet: str
 
 
@@ -86,8 +86,8 @@ class TwitterAgent:
             Updated state with retrieved context.
         """
         prompt = state["prompt"][-1]
-        context = self.tools["search_google"].invoke(prompt)
-        return {"prompt": [prompt], "context": context}
+        context = self.tools["search_google"].invoke({'prompt': prompt})
+        return {"context": context}
 
     def write_tweet(self, state: TwitterAgentState):
         """Writes a tweet based on the prompt and context.
@@ -98,7 +98,7 @@ class TwitterAgent:
         Returns:
             Updated state with the generated tweet.
         """
-        prompt, context = state["prompt"][-1], state["context"]
+        prompt, context = state["prompt"][0], state["context"]
         tweet = self.tools["tweet_writer"].invoke({'prompt': prompt, 'context': context})
         return {"tweet": tweet}
 
@@ -113,7 +113,7 @@ class TwitterAgent:
         """
         prompt = state["prompt"][-1]
         enhance_prompt = self.config["agent"]["prompt_enhancer"].format(prompt=prompt)
-        new_prompt = self.model.invoke(enhance_prompt)
+        new_prompt = self.model.invoke(enhance_prompt).content
         return {"prompt": [new_prompt]}
 
     def art_generate(self, state: TwitterAgentState):
@@ -126,7 +126,7 @@ class TwitterAgent:
             Updated state with the generated image.
         """
         prompt = state["prompt"][-1]
-        image = self.tools["art_generator"].invoke(prompt)
+        image = self.tools["art_generator"].invoke({'prompt': prompt})
         return {"image": image}
 
     def post_tweet(self, state: TwitterAgentState):

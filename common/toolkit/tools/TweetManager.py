@@ -6,7 +6,7 @@ import base64
 import logging
 from PIL import Image
 from typing import Union
-from utils.hyperbolic_api import make_hyperbolic_llama_inference, make_hyperbolic_sdxl_inference
+from .utils.hyperbolic_api import make_hyperbolic_llama_inference, make_hyperbolic_sdxl_inference
 
 class TwitterManager:
     def __init__(self):
@@ -51,6 +51,7 @@ class TwitterManager:
                 
                 # Decode the base64 string
                 image_data = base64.b64decode(base64_image)
+                logging.info(f"Successfully generated an image with prompt: {prompt}")
 
                 return image_data  # Return image data
 
@@ -75,6 +76,7 @@ class TwitterManager:
         try:        
             response_body = make_hyperbolic_llama_inference(complete_prompt)
             tweet = response_body['choices'][0]['message']['content'].strip()
+            logging.info(f'Successfully generated tweet: {tweet}')
             return tweet
         except Exception as e:
             logging.error(f"Error generating tweet: {e}")
@@ -86,7 +88,7 @@ class TwitterManager:
             media_ids = []
             
             # Upload images if provided
-            if image:
+            if image_data:
                 image = Image.open(io.BytesIO(image_data))
                 
                 buffer = io.BytesIO()

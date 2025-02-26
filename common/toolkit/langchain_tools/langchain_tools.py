@@ -20,7 +20,7 @@ class TweetGenerationInput(BaseModel):
 
 
 class GoogleSearchInput(BaseModel):
-    topic: str = Field(description="topic for google search")
+    prompt: str = Field(description="topic for google search")
 
 
 class ArtGenerationInput(BaseModel):
@@ -28,8 +28,8 @@ class ArtGenerationInput(BaseModel):
 
 
 class PostTweetInput(BaseModel):
-    text: str = Field(description="text of tweet")
-    image: bytes = Field(description="image of tweet")
+    tweet: str = Field(description="text of tweet")
+    image: Optional[bytes] = Field(default=None, description="image of tweet, can be None")
 
 
 class TweetGenerationTool(BaseTool):

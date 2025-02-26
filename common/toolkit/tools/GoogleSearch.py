@@ -1,13 +1,15 @@
 import os
+import re
 import requests
 from dotenv import load_dotenv
 import logging
 from langchain_community.document_loaders import WebBaseLoader
 
-load_dotenv()
 
 class GoogleSearchManager:
     def __init__(self, api_key=None, search_engine_id=None):
+        load_dotenv()
+
         self.api_key = api_key or os.environ.get('GOOGLE_CLOUD_API_KEY')
         self.search_engine_id = search_engine_id or os.environ.get('GOOGLE_SEARCH_ENGINE_ID')
 
@@ -34,7 +36,15 @@ class GoogleSearchManager:
         documents = loader.load()
         return str(documents)
 
-    @staticmethod
+    def clean_text(self, text):
+        # Remove unwanted characters using regex
+        # This pattern removes newlines, tabs, and multiple spaces
+        cleaned = re.sub(r'[\n\t\r]+', ' ', text)  # Replace newlines and tabs with a space
+        cleaned = re.sub(r'[^\w\s,.!?-]', '', cleaned)  # Remove special characters except for common punctuation
+        cleaned = re.sub(r'\s+', ' ', cleaned)  # Replace multiple spaces with a single space
+        cleaned = cleaned.strip()  # Remove leading and trailing whitespace
+        return cleaned
+
     def get_google_search_data(self, query: str):
         """Performs a Google search and fetches detailed content."""
         results = self.google_search(query, 5)
@@ -50,12 +60,14 @@ class GoogleSearchManager:
 
                 # Extract full page content
                 detailed_content = self.fetch_page_content_with_langchain(url)
-                logging.info(f"Extracted Content:\n{detailed_content[:100]}...\n{'-'*80}")
+                cleaned_data = self.clean_text(detailed_content)
+
+                logging.info(f"Extracted Content:\n{cleaned_data[:100]}...\n{'-'*80}")
                 context.append({
                     'title': title,
                     'snippet': snippet,
                     'url': url,
-                    'context': detailed_content
+                    'context': cleaned_data
                 })
 
         return str(context)

@@ -5,10 +5,13 @@ import openai
 from langchain_core.messages import AnyMessage, SystemMessage, HumanMessage, ToolMessage
 from langchain_openai import ChatOpenAI
 from langchain_community.tools.tavily_search import TavilySearchResults
+from dotenv import load_dotenv
 
-from toolkit.langchain_tools.langchain_tools import TweetGenerationTool, ArtGenerationTool, GoogleSearchTool, PostTweetTool
+from common.toolkit.langchain_tools.langchain_tools import TweetGenerationTool, ArtGenerationTool, GoogleSearchTool, PostTweetTool
 
 from .agent_resources.twitter_agent.twitter_agent import TwitterAgent
+
+load_dotenv()
 
 class AgentState(TypedDict):
     messages: Annotated[list[AnyMessage], operator.add]
@@ -60,9 +63,6 @@ class AgentBuilder:
     def create_twitter_agent(self, model_provider='open-ai', model_name='gpt-3.5-turbo'):
         # Define model
         model = self.create_chat_model(provider=model_provider, name=model_name)
-
-        # Built a prompt
-        prompt = self.create_tweet_gen_prompt()
         
         # Load tools
         google_retriever = self.create_google_retriever_tool()
@@ -70,9 +70,9 @@ class AgentBuilder:
         tweet_generator = self.create_tweet_generation_tool()
         tweet_poseter = self.create_tweet_post_tool()
 
-        self.tools.append(google_retriever, tweet_generator, art_generator, tweet_poseter)
+        self.tools.extend([google_retriever, tweet_generator, art_generator, tweet_poseter])
         
-        return Agent(model, self.tools, system=prompt)
+        return TwitterAgent(model, self.tools)
 
     def create_art_generation_tool(self, model_provider='open-ai-image'):
         return ArtGenerationTool()
