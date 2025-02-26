@@ -1,9 +1,9 @@
 import os
 import io
-import re
 import tweepy
 import base64
 import logging
+import requests
 from PIL import Image
 from typing import Union
 from .utils.hyperbolic_api import make_hyperbolic_llama_inference, make_hyperbolic_sdxl_inference
@@ -82,40 +82,33 @@ class TwitterManager:
             logging.error(f"Error generating tweet: {e}")
             return f"Couldn't generate a tweet on {topic}."
 
-    def post_tweet(self, content: str, image_data: str):
-        """Post a tweet with text and optional images using the agent's credentials."""
+    def post_tweet(self, content: str, image_data: Union[bytes, None] = None) -> dict:
+        """Post a tweet with text and optional images."""
         try:
             media_ids = []
-            
-            # Upload images if provided
-            if image_data:
-                image = Image.open(io.BytesIO(image_data))
-                
-                buffer = io.BytesIO()
-                image.save(buffer, format='JPEG')  # You can change the format as needed
-                buffer.seek(0)  # Move to the beginning of the BytesIO buffer
 
-                upload_response = self.tweepy_api.simple_upload(buffer)
-                media_id = re.search(r"media_id=(\d+),", str(upload_response))
-                if media_id:
-                    media_ids.append(media_id.group(1))
-                else:
-                    logging.warning("No media_id found in the upload response.")
-            
-            # Post tweet with text and media
-            response = self.client.create_tweet(text=content, media_ids=media_ids if media_ids else None)
-            tweet_id = response.data['id']
-            
+            if image_data:
+                img_buffer = io.BytesIO(image_data)
+                img_buffer.name = 'image.jpg' # Fake filename for Tweepy.
+
+                media = self.tweepy_api.media_upload(filename=img_buffer.name, file=img_buffer)
+                media_ids.append(media.media_id_string)
+
+            response = self.client.create_tweet(
+                text=content, media_ids=media_ids if media_ids else None
+            )
+            tweet_id = response.data["id"]
+
             return {
                 "success": True,
                 "tweet_id": tweet_id,
                 "message": "Tweet posted successfully!",
-                "media_ids": media_ids
+                "media_ids": media_ids,
             }
-        except Exception as e:
-            error_msg = f"Error posting tweet: {str(e)}"
-            logging.error(error_msg)
-            return {
-                "success": False,
-                "error": error_msg
-            }
+
+        except tweepy.TweepyException as e:  # Catch specific Tweepy errors
+            logging.error("Tweepy error posting tweet: %s", e)
+            return {"success": False, "error": str(e)}
+        except requests.exceptions.RequestException as e:
+            logging.error("Network error posting tweet: %s", e)
+            return {"success": False, "error": str(e)}
