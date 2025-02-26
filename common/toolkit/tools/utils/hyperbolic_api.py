@@ -70,7 +70,6 @@ def _make_safe_hyperbolic_inference(url, headers, data, attempts=5):
             return response.json()
         except requests.exceptions.HTTPError as http_err:
             logging.error("HTTP error occurred: %s", http_err)
-            break  # Optionally break if you don't want to retry on HTTP errors
         except requests.exceptions.ConnectionError as conn_err:
             logging.warning("Connection error occurred: %s", conn_err)
         except requests.exceptions.Timeout as timeout_err:
@@ -79,7 +78,7 @@ def _make_safe_hyperbolic_inference(url, headers, data, attempts=5):
             logging.warning("Too many redirects: %s", redirect_err)
 
         msec = attempt * 100 + 500
-        logging.debug("Attempt %d failed. Retrying in %d ms...", attempt, msec)
+        logging.warning("Attempt %d failed. Retrying in %d ms...", attempt + 1, msec)
         time.sleep(msec / 1000)
 
     return None  # Return None or handle the failure case as needed

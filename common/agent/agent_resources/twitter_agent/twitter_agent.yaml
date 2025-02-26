@@ -7,4 +7,6 @@ agent:
     A bustling city street at dusk, withglowing street lamps and a vivid sunset in the background. 
     An ancient library lit only by the warm, soft glow of a fireplace, casting shadows across the room. 
     
-    Convert the query into a vivid, detailed description that follows the formats above.    
+    Convert the query into a vivid, detailed description that follows the formats above.
+
+    User prompt: {prompt}

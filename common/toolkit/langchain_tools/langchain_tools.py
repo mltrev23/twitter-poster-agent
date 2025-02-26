@@ -20,7 +20,7 @@ class TweetGenerationInput(BaseModel):
 
 
 class GoogleSearchInput(BaseModel):
-    topic: str = Field(description="topic for google search")
+    prompt: str = Field(description="topic for google search")
 
 
 class ArtGenerationInput(BaseModel):
@@ -28,13 +28,13 @@ class ArtGenerationInput(BaseModel):
 
 
 class PostTweetInput(BaseModel):
-    text: str = Field(description="text of tweet")
-    image: Image.Image = Field(description="image of tweet")
+    tweet: str = Field(description="text of tweet")
+    image: Optional[bytes] = Field(default=None, description="image of tweet, can be None")
 
 
 class TweetGenerationTool(BaseTool):
-    name = "tweet_writer"
-    description = "useful tool to create tweet"
+    name: str = "tweet_writer"
+    description: str = "useful tool to create tweet"
     args_schema: Type[BaseModel] = TweetGenerationInput
 
     def _run(self, *args, **kwargs):
@@ -61,8 +61,8 @@ class TweetGenerationTool(BaseTool):
 
 
 class GoogleSearchTool(BaseTool):
-    name = "search_google"
-    description = "useful tool to search google with topic and get context"
+    name: str = "search_google"
+    description: str = "useful tool to search google with topic and get context"
     args_schema: Type[BaseModel] = GoogleSearchInput
 
     def _run(self, *args, **kwargs) -> str:
@@ -70,12 +70,12 @@ class GoogleSearchTool(BaseTool):
         Google search tool call function
 
         Required Arguments:
-            - topic: str    # topic to search google
+            - prompt: str    # prompt to search google
         """
-        topic = kwargs.get('topic')
+        prompt = kwargs.get('prompt')
 
         botify_agent_kit = BotifyAgentKit()
-        return botify_agent_kit.search_google(topic)
+        return botify_agent_kit.search_google(prompt)
 
     async def _arun(self, *args, **kwargs) -> str:
         """Use the tool asynchronously."""
@@ -83,8 +83,8 @@ class GoogleSearchTool(BaseTool):
 
 
 class ArtGenerationTool(BaseTool):
-    name = "art_generator"
-    description = "useful tool to create an image"
+    name: str = "art_generator"
+    description: str = "useful tool to create an image"
     args_schema: Type[BaseModel] = ArtGenerationInput
 
     def _run(self, *args, **kwargs) -> str:
@@ -105,8 +105,8 @@ class ArtGenerationTool(BaseTool):
 
 
 class PostTweetTool(BaseTool):
-    name = "tweet_poster"
-    description = "useful tool to post a tweet with an image"
+    name: str = "tweet_poster"
+    description: str = "useful tool to post a tweet with an image"
     args_schema: Type[BaseModel] = PostTweetInput
 
     def _run(self, *args, **kwargs) -> str:
@@ -114,14 +114,14 @@ class PostTweetTool(BaseTool):
         Post tweet on twitter
 
         Required Arguments:
-            - text: str    # text data of tweet
+            - tweet: str    # tweet data of tweet
             - image: str   # image on tweet
         """
-        text = kwargs.get('text')
+        tweet = kwargs.get('tweet')
         image = kwargs.get('image')
 
         botify_agent_kit = BotifyAgentKit()
-        return botify_agent_kit.post_tweet(text, image)
+        return botify_agent_kit.post_tweet(tweet, image)
 
     async def _arun(self, *args, **kwargs) -> str:
         """Use the tool asynchronously."""

@@ -6,6 +6,7 @@ from langgraph.graph import StateGraph, END
 from langchain_core.messages import AnyMessage, SystemMessage, ToolMessage
 from langchain_openai import ChatOpenAI
 from langchain_community.tools.tavily_search import TavilySearchResults
+from dotenv import load_dotenv
 
 from common.toolkit.langchain_tools.langchain_tools import (
     TweetGenerationTool,
@@ -15,7 +16,6 @@ from common.toolkit.langchain_tools.langchain_tools import (
 )
 
 from .agent_resources.twitter_agent.twitter_agent import TwitterAgent
-
 
 class AgentState(TypedDict):
     messages: Annotated[List[AnyMessage], operator.add]

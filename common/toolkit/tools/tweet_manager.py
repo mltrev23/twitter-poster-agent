@@ -40,7 +40,8 @@ class TwitterManager:
             access_token_secret=self.access_token_secret,
         )
 
-    def generate_image(self, prompt: str) -> Union[None, bytes]:
+    @staticmethod
+    def generate_image( prompt: str) -> Union[None, bytes]:
         """Generates an image based on the given prompt using SDXL."""
         try:
             response_body = make_hyperbolic_sdxl_inference(prompt)

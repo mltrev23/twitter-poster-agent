@@ -1,19 +1,18 @@
 """Module for google search tool implementation"""
 import os
+import re
 import logging
-from dotenv import load_dotenv
 import requests
+from dotenv import load_dotenv
 from langchain_community.document_loaders import WebBaseLoader
-
-load_dotenv()
 
 
 class GoogleSearchManager:
     def __init__(self, api_key=None, search_engine_id=None):
-        self.api_key = api_key or os.environ.get("GOOGLE_CLOUD_API_KEY")
-        self.search_engine_id = search_engine_id or os.environ.get(
-            "GOOGLE_SEARCH_ENGINE_ID"
-        )
+        load_dotenv()
+
+        self.api_key = api_key or os.environ.get('GOOGLE_CLOUD_API_KEY')
+        self.search_engine_id = search_engine_id or os.environ.get('GOOGLE_SEARCH_ENGINE_ID')
 
     def google_search(self, query, num_results=5):
         """Fetches search results using Google Custom Search API."""
@@ -38,6 +37,15 @@ class GoogleSearchManager:
         documents = loader.load()
         return str(documents)
 
+    def clean_text(self, text):
+        # Remove unwanted characters using regex
+        # This pattern removes newlines, tabs, and multiple spaces
+        cleaned = re.sub(r'[\n\t\r]+', ' ', text)  # Replace newlines and tabs with a space
+        cleaned = re.sub(r'[^\w\s,.!?-]', '', cleaned)  # special characters
+        cleaned = re.sub(r'\s+', ' ', cleaned)  # Replace multiple spaces with a single space
+        cleaned = cleaned.strip()  # Remove leading and trailing whitespace
+        return cleaned
+
     def get_google_search_data(self, query: str):
         """Performs a Google search and fetches detailed content."""
         results = self.google_search(query, 5)
@@ -53,16 +61,14 @@ class GoogleSearchManager:
 
                 # Extract full page content
                 detailed_content = self.fetch_page_content_with_langchain(url)
-                logging.info(
-                    "Extracted Content:\n%s...\n{'-'*80}", detailed_content[:100]
-                )
-                context.append(
-                    {
-                        "title": title,
-                        "snippet": snippet,
-                        "url": url,
-                        "context": detailed_content,
-                    }
-                )
+                cleaned_data = self.clean_text(detailed_content)
+
+                logging.info(f"Extracted Content:\n{cleaned_data[:100]}...\n{'-'*80}")
+                context.append({
+                    'title': title,
+                    'snippet': snippet,
+                    'url': url,
+                    'context': cleaned_data
+                })
 
         return str(context)
