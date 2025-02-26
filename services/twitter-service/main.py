@@ -21,8 +21,6 @@ def post_tweet(prompt: TweetPrompt):
     return True
 
 if __name__ == '__main__':
-    # import uvicorn
+    import uvicorn
 
-    # uvicorn.run(app, host='0.0.0.0', port=8000)
-
-    post_tweet(TweetPrompt(prompt='bitcoin trending'))
+    uvicorn.run(app, host='0.0.0.0', port=60001)

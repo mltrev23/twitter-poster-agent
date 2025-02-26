@@ -2,23 +2,9 @@
 import os
 import operator
 from typing import TypedDict, Any, Annotated # Standard library import
-import yaml
 from langgraph.graph import StateGraph, END, START  # Third-party import
 
-
-def load_yaml_config(file_path: str) -> Any:
-    """Loads a YAML configuration file.
-
-    Args:
-        file_path (str): The path to the YAML file.
-
-    Returns:
-        Any: The content of the YAML file as a Python object.
-    """
-    with open(file_path, "r", encoding="utf-8") as file:  # Specified encoding
-        config = yaml.safe_load(file)
-    return config
-
+from common.agent.agent_utils.load_yaml_config import load_yaml_config
 
 class TwitterAgentState(TypedDict):
     """Represents the state of the Twitter agent."""
