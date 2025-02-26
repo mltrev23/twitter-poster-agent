@@ -86,15 +86,11 @@ class TwitterManager:
             media_ids = []
 
             if image_data:
-                image = Image.open(io.BytesIO(image_data))
+                img_buffer = io.BytesIO(image_data)
+                img_buffer.name = 'image.jpg' # Fake filename for Tweepy.
 
-                buffer = io.BytesIO()
-                image.save(buffer, format="JPEG")
-                buffer.seek(0)
-
-                upload_response = self.tweepy_api.simple_upload(buffer)
-                media_id = upload_response.media_id  # Correct usage of media_id
-                media_ids.append(str(media_id))
+                media = self.tweepy_api.media_upload(filename=img_buffer.name, file=img_buffer)
+                media_ids.append(media.media_id_string)
 
             response = self.client.create_tweet(
                 text=content, media_ids=media_ids if media_ids else None
@@ -108,7 +104,7 @@ class TwitterManager:
                 "media_ids": media_ids,
             }
 
-        except tweepy.TweepError as e:
+        except tweepy.TweepyException as e:  # Catch specific Tweepy errors
             logging.error("Tweepy error posting tweet: %s", e)
             return {"success": False, "error": str(e)}
         except requests.exceptions.RequestException as e:
