@@ -17,6 +17,7 @@ from common.toolkit.langchain_tools.langchain_tools import (
 
 from .agent_resources.twitter_agent.twitter_agent import TwitterAgent
 
+
 class AgentState(TypedDict):
     messages: Annotated[List[AnyMessage], operator.add]
 
@@ -51,8 +52,11 @@ class AgentBuilder:
         )
 
     def create_retriever_agent(
-        self, retriever: Any, model_provider: str = "open-ai", model_name: str = "gpt-3.5-turbo"
-    ) -> 'Agent':
+        self,
+        retriever: Any,
+        model_provider: str = "open-ai",
+        model_name: str = "gpt-3.5-turbo",
+    ) -> "Agent":
         model = self.create_chat_model(provider=model_provider, name=model_name)
         retriever_tool = self.create_retriever_tool(retriever)
         self.tools.append(retriever_tool)
@@ -61,7 +65,7 @@ class AgentBuilder:
 
     def create_twitter_agent(
         self, model_provider: str = "open-ai", model_name: str = "gpt-3.5-turbo"
-    ) -> 'Agent':
+    ) -> "Agent":
         # Define model
         model = self.create_chat_model(provider=model_provider, name=model_name)
 
@@ -106,7 +110,7 @@ class AgentBuilder:
         raise ValueError(f"Unsupported model provider: {provider}")
 
     @staticmethod
-    def create_retriever_tool(retriever: Any) -> 'RetrieverTool':
+    def create_retriever_tool(retriever: Any) -> "RetrieverTool":
         return RetrieverTool(retriever=retriever)
 
 
@@ -116,9 +120,7 @@ class Agent:
         graph = StateGraph(AgentState)
         graph.add_node("llm", self.call_openai)
         graph.add_node("action", self.take_action)
-        graph.add_conditional_edges(
-            "llm", self.exists_action, {True: "action", False: END}
-        )
+        graph.add_conditional_edges("llm", self.exists_action, {True: "action", False: END})
         graph.add_edge("action", "llm")
         graph.set_entry_point("llm")
         self.graph = graph.compile()
@@ -146,8 +148,6 @@ class Agent:
                 result = "bad tool name, retry"  # instruct LLM to retry if bad
             else:
                 result = self.tools[t["name"]].invoke(t["args"])
-            results.append(
-                ToolMessage(tool_call_id=t["id"], name=t["name"], content=str(result))
-            )
+            results.append(ToolMessage(tool_call_id=t["id"], name=t["name"], content=str(result)))
         print("Back to the model!")
         return {"messages": results}

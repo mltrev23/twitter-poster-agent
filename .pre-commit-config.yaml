@@ -1,6 +1,11 @@
 repos:
-  - repo: https://github.com/pre-commit/mirrors-pylint
-    rev: v3.0.0a5  # Change this to the latest version of pylint
-    hooks:
-      - id: pylint
-        args: ["--rcfile=.pylintrc", "--disable=import-error"]
+- repo: https://github.com/psf/black
+  rev: 23.12.1 # Use the latest stable version of black
+  hooks:
+  - id: black
+    language_version: python3.10 # Adapt this to your Python version
+- repo: https://github.com/pre-commit/mirrors-pylint
+  rev: v3.0.0a5  # Change this to the latest version of pylint
+  hooks:
+  - id: pylint
+    args: ["--rcfile=.pylintrc", "--disable=import-error"]

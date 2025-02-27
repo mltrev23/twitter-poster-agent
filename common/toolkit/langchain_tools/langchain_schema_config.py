@@ -1,6 +1,7 @@
 from typing import Optional, Type
 from pydantic import BaseModel, Field
 
+
 class TweetGenerationInput(BaseModel):
     prompt: str = Field(description="topic for a tweet")
     context: str = Field(description="relevant context of prompt")

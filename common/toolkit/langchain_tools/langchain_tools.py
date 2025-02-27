@@ -1,4 +1,5 @@
-""" Module for custom langchain tools """
+"""Module for custom langchain tools"""
+
 from typing import Optional, Type
 
 # Third-party imports
@@ -19,6 +20,7 @@ from common.toolkit.langchain_tools.langchain_schema_config import (
     PostTweetInput,
 )
 
+
 class TweetGenerationTool(BaseTool):
     name: str = "tweet_writer"
     description: str = "useful tool to create tweet"
@@ -33,11 +35,11 @@ class TweetGenerationTool(BaseTool):
             - context: str   # relevant context of topic
         """
 
-        prompt = kwargs.get('prompt')
-        context = kwargs.get('context')
+        prompt = kwargs.get("prompt")
+        context = kwargs.get("context")
 
         if prompt is None:
-            return 'This is my test tweet!'
+            return "This is my test tweet!"
 
         botify_agent_kit = BotifyAgentKit()
         return botify_agent_kit.write_tweet(prompt, context)
@@ -59,7 +61,7 @@ class GoogleSearchTool(BaseTool):
         Required Arguments:
             - prompt: str    # prompt to search google
         """
-        prompt = kwargs.get('prompt')
+        prompt = kwargs.get("prompt")
 
         botify_agent_kit = BotifyAgentKit()
         return botify_agent_kit.search_google(prompt)
@@ -81,7 +83,7 @@ class ArtGenerationTool(BaseTool):
         Required Arguments:
             - prompt: str    # prompt or topic for image generation
         """
-        prompt = kwargs.get('prompt')
+        prompt = kwargs.get("prompt")
 
         botify_agent_kit = BotifyAgentKit()
         return botify_agent_kit.generate_twitter_image(prompt)
@@ -104,8 +106,8 @@ class PostTweetTool(BaseTool):
             - tweet: str    # tweet data of tweet
             - image: str   # image on tweet
         """
-        tweet = kwargs.get('tweet')
-        image = kwargs.get('image')
+        tweet = kwargs.get("tweet")
+        image = kwargs.get("image")
 
         botify_agent_kit = BotifyAgentKit()
         return botify_agent_kit.post_tweet(tweet, image)

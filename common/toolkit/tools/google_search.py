@@ -1,4 +1,5 @@
 """Module for google search tool implementation"""
+
 import os
 import re
 import logging
@@ -11,8 +12,8 @@ class GoogleSearchManager:
     def __init__(self, api_key=None, search_engine_id=None):
         load_dotenv()
 
-        self.api_key = api_key or os.environ.get('GOOGLE_CLOUD_API_KEY')
-        self.search_engine_id = search_engine_id or os.environ.get('GOOGLE_SEARCH_ENGINE_ID')
+        self.api_key = api_key or os.environ.get("GOOGLE_CLOUD_API_KEY")
+        self.search_engine_id = search_engine_id or os.environ.get("GOOGLE_SEARCH_ENGINE_ID")
 
     def google_search(self, query, num_results=5):
         """Fetches search results using Google Custom Search API."""
@@ -40,9 +41,9 @@ class GoogleSearchManager:
     def clean_text(self, text):
         # Remove unwanted characters using regex
         # This pattern removes newlines, tabs, and multiple spaces
-        cleaned = re.sub(r'[\n\t\r]+', ' ', text)  # Replace newlines and tabs with a space
-        cleaned = re.sub(r'[^\w\s,.!?-]', '', cleaned)  # special characters
-        cleaned = re.sub(r'\s+', ' ', cleaned)  # Replace multiple spaces with a single space
+        cleaned = re.sub(r"[\n\t\r]+", " ", text)  # Replace newlines and tabs with a space
+        cleaned = re.sub(r"[^\w\s,.!?-]", "", cleaned)  # special characters
+        cleaned = re.sub(r"\s+", " ", cleaned)  # Replace multiple spaces with a single space
         cleaned = cleaned.strip()  # Remove leading and trailing whitespace
         return cleaned
 
@@ -64,11 +65,13 @@ class GoogleSearchManager:
                 cleaned_data = self.clean_text(detailed_content)
 
                 logging.info(f"Extracted Content:\n{cleaned_data[:100]}...\n{'-'*80}")
-                context.append({
-                    'title': title,
-                    'snippet': snippet,
-                    'url': url,
-                    'context': cleaned_data
-                })
+                context.append(
+                    {
+                        "title": title,
+                        "snippet": snippet,
+                        "url": url,
+                        "context": cleaned_data,
+                    }
+                )
 
         return str(context)

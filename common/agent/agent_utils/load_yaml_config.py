@@ -1,5 +1,6 @@
 import yaml
 
+
 def load_yaml_config(file_path: str):
     """Loads a YAML configuration file.
 
