@@ -1,9 +1,17 @@
 from langgraph.graph import StateGraph, END
 from typing import TypedDict, Annotated
 import operator
+import openai
 from langchain_core.messages import AnyMessage, SystemMessage, HumanMessage, ToolMessage
 from langchain_openai import ChatOpenAI
 from langchain_community.tools.tavily_search import TavilySearchResults
+from dotenv import load_dotenv
+
+from common.toolkit.langchain_tools.langchain_tools import TweetGenerationTool, ArtGenerationTool, GoogleSearchTool, PostTweetTool
+
+from .agent_resources.twitter_agent.twitter_agent import TwitterAgent
+
+load_dotenv()
 
 class AgentState(TypedDict):
     messages: Annotated[list[AnyMessage], operator.add]
@@ -30,6 +38,14 @@ class AgentBuilder:
 
                 """
 
+    def create_tweet_gen_prompt(self, topic: str):
+        return f"""
+            1. Search Google for context about "{topic}".
+            2. Generate a tweet based on the context.
+            3. Generate an image related to "{topic}".
+            4. Post the tweet and image to Twitter.
+            """
+
     def create_retriever_agent(self,retriever, model_provider= 'open-ai',model_name = 'gpt-3.5-turbo'):
         model = self.create_chat_model(provider = model_provider, name = model_name)
         retriever_tool = self.create_retriever_tool(retriever)
@@ -43,6 +59,32 @@ class AgentBuilder:
         self.tools.append(retriever_tool)
         prompt = self.create_text_gen_prompt()
         return Agent(model, self.tools, system=prompt)
+    
+    def create_twitter_agent(self, model_provider='open-ai', model_name='gpt-3.5-turbo'):
+        # Define model
+        model = self.create_chat_model(provider=model_provider, name=model_name)
+        
+        # Load tools
+        google_retriever = self.create_google_retriever_tool()
+        art_generator = self.create_art_generation_tool()
+        tweet_generator = self.create_tweet_generation_tool()
+        tweet_poseter = self.create_tweet_post_tool()
+
+        self.tools.extend([google_retriever, tweet_generator, art_generator, tweet_poseter])
+        
+        return TwitterAgent(model, self.tools)
+
+    def create_art_generation_tool(self, model_provider='open-ai-image'):
+        return ArtGenerationTool()
+
+    def create_google_retriever_tool(self):
+        return GoogleSearchTool()
+
+    def create_tweet_generation_tool(self):
+        return TweetGenerationTool()
+
+    def create_tweet_post_tool(self):
+        return PostTweetTool()
 
     def create_blink_agent():
         print("Not implemented")
