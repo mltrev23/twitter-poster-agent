@@ -44,7 +44,6 @@ class TwitterAgent:
         """
         graph = StateGraph(TwitterAgentState)
 
-        graph.add_node("supervior", self.supervisor)
         graph.add_node("search_google", self.search_google)
         graph.add_node("write_tweet", self.write_tweet)
         graph.add_node("enhance_prompt", self.enhance_prompt)
