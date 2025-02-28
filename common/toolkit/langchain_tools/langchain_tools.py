@@ -12,7 +12,7 @@ from langchain.callbacks.manager import (
 
 # Local application imports
 from common.toolkit.agent_kit.agent_kit import BotifyAgentKit
-from .langchain_schema_config import (
+from common.toolkit.langchain_tools.langchain_schema_config import (
     TweetGenerationInput,
     GoogleSearchInput,
     ArtGenerationInput,
@@ -113,4 +113,3 @@ class PostTweetTool(BaseTool):
     async def _arun(self, *args, **kwargs) -> str:
         """Use the tool asynchronously."""
         raise NotImplementedError("PostTweetTool does not support async")
-

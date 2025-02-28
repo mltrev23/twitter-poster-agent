@@ -1,8 +1,9 @@
+"""Module for google search tool implementation"""
 import os
 import re
+import logging
 import requests
 from dotenv import load_dotenv
-import logging
 from langchain_community.document_loaders import WebBaseLoader
 
 
@@ -20,15 +21,15 @@ class GoogleSearchManager:
             "q": query,
             "key": self.api_key,
             "cx": self.search_engine_id,
-            "num": num_results
+            "num": num_results,
         }
 
-        response = requests.get(url, params=params)
+        response = requests.get(url, params=params, timeout=60)
         if response.status_code == 200:
             return response.json().get("items", [])
-        else:
-            logging.error(f"Error: {response.status_code} {response.text}")
-            return []
+
+        logging.error("Error: %s %s", response.status_code, response.text)
+        return []
 
     def fetch_page_content_with_langchain(self, url):
         """Fetches the full page content using Langchain's WebBaseLoader."""
@@ -40,7 +41,7 @@ class GoogleSearchManager:
         # Remove unwanted characters using regex
         # This pattern removes newlines, tabs, and multiple spaces
         cleaned = re.sub(r'[\n\t\r]+', ' ', text)  # Replace newlines and tabs with a space
-        cleaned = re.sub(r'[^\w\s,.!?-]', '', cleaned)  # Remove special characters except for common punctuation
+        cleaned = re.sub(r'[^\w\s,.!?-]', '', cleaned)  # special characters
         cleaned = re.sub(r'\s+', ' ', cleaned)  # Replace multiple spaces with a single space
         cleaned = cleaned.strip()  # Remove leading and trailing whitespace
         return cleaned
@@ -56,7 +57,7 @@ class GoogleSearchManager:
                 snippet = item.get("snippet")
                 url = item.get("link")
 
-                logging.info(f"\n{idx}. {title}\n{snippet}\n{url}\n")
+                logging.info("\n%s. %s\n%s\n%s\n", idx, title, snippet, url)
 
                 # Extract full page content
                 detailed_content = self.fetch_page_content_with_langchain(url)

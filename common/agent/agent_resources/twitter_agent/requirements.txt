@@ -1,0 +1,4 @@
+langchain==0.3.19
+tweepy==4.15.0
+pillow==11.1.0
+python-dotenv==1.0.1

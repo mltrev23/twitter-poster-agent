@@ -1,0 +1,39 @@
+[MASTER]
+# Specify a list of files or directories to ignore
+ignore=tests,venv,*.pyc
+
+[MESSAGES CONTROL]
+# Disable specific warnings
+disable=undefined-variable,
+        too-few-public-methods,
+        useless-super-delegation,
+        unused-argument,
+        too-many-instance-attributes,
+        unused-import,
+        missing-module-docstring,
+        missing-function-docstring,
+        missing-class-docstring,
+        logging-fstring-interpolation
+
+[FORMAT]
+# Maximum number of characters on a single line
+max-line-length=100
+indent-string='    '  # Use 4 spaces for indentation
+
+[NAMING]
+# Naming conventions for variables
+variable-rgx=[a-z_][a-z0-9_]{0,30}$
+const-rgx=[A_UPPER_][A_UPPER0-9_]{0,30}$
+class-rgx=[A-Z_][a-zA-Z0-9_]{0,30}$
+function-rgx=[a-z_][a-z0-9_]{0,30}$
+
+[TYPECHECK]
+# Allow dynamic typing
+generated-members=.*  # Allow dynamic attributes
+
+[LOGGING]
+# Set the default logging level
+logging-modules=logging
+
+[DESIGN]
+max-args=15

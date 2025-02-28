@@ -1,12 +1,15 @@
-from agentipy import SolanaAgentKit
+"""Module for agent kit"""
 from typing import Optional
-from ..tools.TweetManager import TwitterManager
-from ..tools.GoogleSearch import GoogleSearchManager
+from agentipy import SolanaAgentKit
 from PIL import Image
+from common.toolkit.tools.tweet_manager import TwitterManager
+from common.toolkit.tools.google_search import GoogleSearchManager
+
 
 class BotifyAgentKit(SolanaAgentKit):
 
-    def __init__(self,
+    def __init__(
+        self,
         private_key: Optional[str] = None,
         rpc_url: Optional[str] = None,
         openai_api_key: Optional[str] = None,
@@ -19,8 +22,7 @@ class BotifyAgentKit(SolanaAgentKit):
         jito_uuid: Optional[str] = None,
         stork_api_key: Optional[str] = None,
         generate_wallet: bool = False):
-        
-        
+
         # super().__init__(
         #     private_key,
         #     rpc_url,
@@ -36,13 +38,13 @@ class BotifyAgentKit(SolanaAgentKit):
         #     generate_wallet
         # )
         pass
-    
+
     def generate_twitter_image(self, prompt: str):
         return TwitterManager.generate_image(prompt)
-    
+
     def write_tweet(self, prompt: str, context: str):
         return TwitterManager.write_tweet(prompt, context)
-    
+
     def search_google(self, topic: str):
         google_search_manager = GoogleSearchManager()
         context = google_search_manager.get_google_search_data(topic)

@@ -4,6 +4,7 @@ from fastapi import FastAPI
 
 app = FastAPI()
 
+
 @app.get("/query-service")
 def query_stream():
-    return {"Hello","World"}
+    return {"Hello", "World"}

@@ -1,4 +1,5 @@
 """Module providing hyperbolic api call functions"""
+
 import os
 import time
 import logging
@@ -6,7 +7,7 @@ import requests
 from dotenv import load_dotenv
 
 
-def make_hyperbolic_llama_inference(messages):
+def make_hyperbolic_llama_inference(messages, max_tokens=512, temperature=0.9, top_p=0.9):
     """A function that calls llama 3.3 70B Instruct via hyperbolic api"""
     load_dotenv()
 
@@ -20,15 +21,23 @@ def make_hyperbolic_llama_inference(messages):
     data = {
         "messages": messages,
         "model": "meta-llama/Llama-3.3-70B-Instruct",
-        "max_tokens": 512,
-        "temperature": 0.9,
-        "top_p": 0.9,
+        "max_tokens": max_tokens,
+        "temperature": temperature,
+        "top_p": top_p,
     }
 
-    return __make_safe_hyperbolic_inference(url, headers, data)
+    return _make_safe_hyperbolic_inference(url, headers, data)
 
 
-def make_hyperbolic_sdxl_inference(prompt):
+def make_hyperbolic_sdxl_inference(
+        prompt,
+        steps=30,
+        cfg_scale=5,
+        enable_refiner=False,
+        width=1024,
+        height=1024,
+        backend='auto'
+    ):
     """A function that calls flux.1 dev via hyperbolic api"""
     load_dotenv()
 
@@ -42,18 +51,18 @@ def make_hyperbolic_sdxl_inference(prompt):
     data = {
         "model_name": "FLUX.1-dev",
         "prompt": prompt,
-        "steps": 30,
-        "cfg_scale": 5,
-        "enable_refiner": False,
-        "height": 1024,
-        "width": 1024,
-        "backend": "auto",
+        "steps": steps,
+        "cfg_scale": cfg_scale,
+        "enable_refiner": enable_refiner,
+        "height": height,
+        "width": width,
+        "backend": backend,
     }
 
-    return __make_safe_hyperbolic_inference(url, headers, data)
+    return _make_safe_hyperbolic_inference(url, headers, data)
 
 
-def __make_safe_hyperbolic_inference(url, headers, data, attempts=5):
+def _make_safe_hyperbolic_inference(url, headers, data, attempts=5):
     for attempt in range(attempts):
         try:
             response = requests.post(url, headers=headers, json=data, timeout=60)

@@ -8,7 +8,6 @@ from common.agent.agent_utils.load_yaml_config import load_yaml_config
 
 class TwitterAgentState(TypedDict):
     """Represents the state of the Twitter agent."""
-
     prompt: Annotated[list[str], operator.add]
     context: str
     image: bytes
