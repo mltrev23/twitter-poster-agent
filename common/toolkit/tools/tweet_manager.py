@@ -51,6 +51,7 @@ class TwitterManager:
             if "images" in response_body and isinstance(response_body["images"], list):
                 base64_image = response_body["images"][0]["image"]
                 image_data = base64.b64decode(base64_image)
+                logging.info("Successfully generated an image with prompt: %s", prompt)
                 return image_data
 
             logging.info("Failed to generate an image with prompt: %s", prompt)
@@ -66,7 +67,7 @@ class TwitterManager:
     def write_tweet(topic: str, context: str) -> str:
         system_prompt = (
             "Create a tweet that captures the excitement of the topic while keeping it engaging."
-            "Include relevant hashtags."
+            "Include relevant hashtags. Do not add any other description than tweet content."
         )
         complete_prompt = [
             {"role": "system", "content": system_prompt},
@@ -92,7 +93,7 @@ class TwitterManager:
 
             if image_data:
                 img_buffer = io.BytesIO(image_data)
-                img_buffer.name = "image.jpg"  # Fake filename for Tweepy.
+                img_buffer.name = "image.png"  # Fake filename for Tweepy.
 
                 media = self.tweepy_api.media_upload(filename=img_buffer.name, file=img_buffer)
                 media_ids.append(media.media_id_string)
