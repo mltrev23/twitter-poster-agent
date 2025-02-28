@@ -1,4 +1,5 @@
 """Module for tweet manager tool implementation"""
+
 import os
 import io
 import re
@@ -12,6 +13,7 @@ from common.toolkit.tools.utils.hyperbolic_api import (
     make_hyperbolic_llama_inference,
     make_hyperbolic_sdxl_inference,
 )
+
 
 class TwitterManager:
     def __init__(self):
@@ -41,7 +43,7 @@ class TwitterManager:
         )
 
     @staticmethod
-    def generate_image( prompt: str) -> Union[None, bytes]:
+    def generate_image(prompt: str) -> Union[None, bytes]:
         """Generates an image based on the given prompt using SDXL."""
         try:
             response_body = make_hyperbolic_sdxl_inference(prompt)
@@ -87,7 +89,7 @@ class TwitterManager:
 
             if image_data:
                 img_buffer = io.BytesIO(image_data)
-                img_buffer.name = 'image.jpg' # Fake filename for Tweepy.
+                img_buffer.name = "image.jpg"  # Fake filename for Tweepy.
 
                 media = self.tweepy_api.media_upload(filename=img_buffer.name, file=img_buffer)
                 media_ids.append(media.media_id_string)

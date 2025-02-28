@@ -30,14 +30,14 @@ def make_hyperbolic_llama_inference(messages, max_tokens=512, temperature=0.9, t
 
 
 def make_hyperbolic_sdxl_inference(
-        prompt,
-        steps=30,
-        cfg_scale=5,
-        enable_refiner=False,
-        width=1024,
-        height=1024,
-        backend='auto'
-    ):
+    prompt,
+    steps=30,
+    cfg_scale=5,
+    enable_refiner=False,
+    width=1024,
+    height=1024,
+    backend="auto",
+):
     """A function that calls flux.1 dev via hyperbolic api"""
     load_dotenv()
 
