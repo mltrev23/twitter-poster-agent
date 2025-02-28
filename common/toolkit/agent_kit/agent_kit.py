@@ -39,4 +39,4 @@ class BotifyAgentKit(SolanaAgentKit):
 
     def post_tweet(self, text: str, image: bytes):
         tweet_manager = TwitterManager()
-        tweet_manager.post_tweet(text, image)
+        return tweet_manager.post_tweet(text, image)

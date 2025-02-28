@@ -20,6 +20,7 @@ def post_tweet(prompt: TweetPrompt):
     data = {"prompt": [prompt.prompt]}
 
     result = twitter_agent.graph.invoke(data)
+    logging.info("result: %s", result["result"])
 
     return {"tweet": result["tweet"]}
 

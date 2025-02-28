@@ -15,6 +15,7 @@ class TwitterAgentState(TypedDict):
     context: str
     image: bytes
     tweet: str
+    result: str
 
 
 class TwitterAgent:
@@ -52,12 +53,13 @@ class TwitterAgent:
         graph.add_node("enhance_prompt", self.enhance_prompt)
         graph.add_node("art_generate", self.art_generate)
         graph.add_node("post_tweet", self.post_tweet)
+        graph.add_node("blank_node", lambda x: {})
 
         graph.add_edge(START, "search_google")
         graph.add_edge("search_google", "write_tweet")
-        graph.add_edge(START, "enhance_prompt")
-        graph.add_edge("enhance_prompt", "art_generate")
-        graph.add_edge("write_tweet", "post_tweet")
+        graph.add_edge("write_tweet", "art_generate")
+        graph.add_edge("write_tweet", "blank_node")
+        graph.add_edge("blank_node", "post_tweet")
         graph.add_edge("art_generate", "post_tweet")
         graph.add_edge("post_tweet", END)
 
@@ -99,7 +101,7 @@ class TwitterAgent:
         Returns:
             Updated state with the enhanced prompt.
         """
-        prompt = state["prompt"][-1]
+        prompt = state["tweet"]
         enhance_prompt = self.config["agent"]["prompt_enhancer"].format(prompt=prompt)
         new_prompt = self.model.invoke(enhance_prompt).content
         return {"prompt": [new_prompt]}
@@ -113,7 +115,7 @@ class TwitterAgent:
         Returns:
             Updated state with the generated image.
         """
-        prompt = state["prompt"][-1]
+        prompt = state["tweet"]
         image = self.tools["art_generator"].invoke({"prompt": prompt})
         return {"image": image}
 
@@ -127,5 +129,5 @@ class TwitterAgent:
             The original state after posting the tweet.
         """
         tweet, image = state["tweet"], state["image"]
-        self.tools["tweet_poster"].invoke({"tweet": tweet, "image": image})
-        return state
+        result = self.tools["tweet_poster"].invoke({"tweet": tweet, "image": image})
+        return {"result": str(result)}

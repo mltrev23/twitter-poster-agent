@@ -67,7 +67,7 @@ class TwitterManager:
     def write_tweet(topic: str, context: str) -> str:
         system_prompt = (
             "Create a tweet that captures the excitement of the topic while keeping it engaging."
-            "Include relevant hashtags."
+            "Include relevant hashtags. Do not add any other description than tweet content."
         )
         complete_prompt = [
             {"role": "system", "content": system_prompt},
