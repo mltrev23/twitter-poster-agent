@@ -20,9 +20,13 @@ def post_tweet(prompt: TweetPrompt):
     data = {"prompt": [prompt.prompt]}
 
     result = twitter_agent.graph.invoke(data)
-    logging.info("result: %s", result)
+    # logging.info("result: %s", result['tweet'])
 
-    return True
+    # image_data = result['image']
+    # with open("image.png", "wb") as f:
+    #     f.write(image_data)
+
+    return {"tweet": result["tweet"], "image": result["image"]}
 
 
 if __name__ == "__main__":

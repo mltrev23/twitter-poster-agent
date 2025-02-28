@@ -1,7 +1,7 @@
 [tool.black]
-line-length = 100 # Adjust the line length as you prefer, default is 88
-target-version = ['py38', 'py39', 'py310', 'py311'] # set the python versions.
-include = '\.pyi?$' # This is a regex for files to include in formatting (default).
+line-length = 100
+target-version = ['py38', 'py39', 'py310', 'py311']
+include = '\.pyi?$'
 exclude = '''
 /(
     \.git
@@ -14,7 +14,7 @@ exclude = '''
   | build
   | dist
 )/
-''' # files to exclude, based on regex.
+'''
 
 [project]
 name = "botify-ai"
@@ -24,8 +24,21 @@ authors = [
     {name = "mltrev23",email = "trevor.dev23@gmail.com"}
 ]
 readme = "README.md"
-requires-python = ">=3.10"
+# Changed the line below from ">=3.12" to ">=3.10,<4.0"
+requires-python = ">=3.10,<4.0"
 dependencies = [
+    "fastapi (>=0.115.9,<0.116.0)",
+    "openai (>=1.65.1,<2.0.0)",
+    "langchain (==0.3.19)",
+    "langgraph (==0.2.74)",
+    "langchain-openai (>=0.3.7,<0.4.0)",
+    "langchain-community (>=0.3.18,<0.4.0)",
+    "pillow (>=11.1.0,<12.0.0)",
+    "agentipy (>=2.0.2,<3.0.0)",
+    "tweepy (>=4.15.0,<5.0.0)",
+    "uvicorn (>=0.34.0,<0.35.0)",
+    "bs4 (>=0.0.2,<0.0.3)",
+    "pre-commit (>=4.1.0,<5.0.0)"
 ]
 
 

@@ -6,6 +6,7 @@ import logging
 import requests
 from dotenv import load_dotenv
 from langchain_community.document_loaders import WebBaseLoader
+from requests.exceptions import RequestException
 
 
 class GoogleSearchManager:
@@ -25,18 +26,28 @@ class GoogleSearchManager:
             "num": num_results,
         }
 
-        response = requests.get(url, params=params, timeout=60)
-        if response.status_code == 200:
+        try:
+            response = requests.get(url, params=params, timeout=60)
+            response.raise_for_status()  # Raise HTTPError for bad responses (4xx or 5xx)
+
             return response.json().get("items", [])
 
-        logging.error("Error: %s %s", response.status_code, response.text)
-        return []
+        except RequestException as e:
+            logging.error(f"Request error during google search: {e}")
+            return []
+        except (ValueError, KeyError) as e:
+            logging.error(f"Error parsing response from google: {e}")
+            return []
 
     def fetch_page_content_with_langchain(self, url):
         """Fetches the full page content using Langchain's WebBaseLoader."""
-        loader = WebBaseLoader([url])
-        documents = loader.load()
-        return str(documents)
+        try:
+            loader = WebBaseLoader([url])
+            documents = loader.load()
+            return str(documents)
+        except Exception as e:
+            logging.error(f"Error fetching page content from {url}: {e}")
+            return ""
 
     def clean_text(self, text):
         # Remove unwanted characters using regex
