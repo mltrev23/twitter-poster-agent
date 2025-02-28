@@ -81,6 +81,9 @@ class TwitterManager:
         except requests.exceptions.RequestException as e:
             logging.error("Network error generating tweet: %s", e)
             return f"Couldn't generate a tweet on {topic}."
+        except TypeError as e:
+            logging.error("TypeError error generating tweet: %s", e)
+            return f"Couldn't generate a tweet on {topic}."
 
     def post_tweet(self, content: str, image_data: Union[bytes, None] = None) -> dict:
         """Post a tweet with text and optional images."""

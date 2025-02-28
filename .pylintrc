@@ -13,7 +13,8 @@ disable=undefined-variable,
         missing-module-docstring,
         missing-function-docstring,
         missing-class-docstring,
-        logging-fstring-interpolation
+        logging-fstring-interpolation,
+        broad-except
 
 [FORMAT]
 # Maximum number of characters on a single line

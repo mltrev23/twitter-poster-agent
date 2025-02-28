@@ -17,6 +17,8 @@ from common.toolkit.langchain_tools.langchain_tools import (
 
 from .agent_resources.twitter_agent.twitter_agent import TwitterAgent
 
+load_dotenv()
+
 
 class AgentState(TypedDict):
     messages: Annotated[List[AnyMessage], operator.add]

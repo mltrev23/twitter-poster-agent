@@ -10,15 +10,9 @@ This project contains multiple services built using FastAPI. Each service is des
     cd botify
     ```
 
-2. Create a virtual environment and activate it:
+2. Install the dependencies:
     ```bash
-    python -m venv venv
-    source venv/bin/activate  # On Windows use `venv\Scripts\activate`
-    ```
-
-3. Install the dependencies:
-    ```bash
-    pip install -r requirements.txt
+    poetry install --no-root
     ```
 
 ## Running the Services
@@ -27,7 +21,7 @@ This project contains multiple services built using FastAPI. Each service is des
 
 To run the Query Service, use the following command:
 ```bash
-uvicorn services.query-service.main:app --reload
+poetry run uvicorn services.query-service.main:app --reload
 ```
 
 The application will be available at `http://127.0.0.1:8000/query-service`.
@@ -40,7 +34,7 @@ The application will be available at `http://127.0.0.1:8000/query-service`.
 
 To run the Mindshare Service, use the following command:
 ```bash
-uvicorn services.mindshare-service.main:app --reload
+poetry run uvicorn services.mindshare-service.main:app --reload
 ```
 
 The application will be available at `http://127.0.0.1:8000/mindshare-service`.
@@ -53,7 +47,7 @@ The application will be available at `http://127.0.0.1:8000/mindshare-service`.
 
 To run the Lulu Service, use the following command:
 ```bash
-uvicorn services.lulu-service.main:app --reload
+poetry run uvicorn services.lulu-service.main:app --reload
 ```
 
 The application will be available at `http://127.0.0.1:8000/lulu-service`.
@@ -61,6 +55,28 @@ The application will be available at `http://127.0.0.1:8000/lulu-service`.
 #### Endpoints
 
 - `GET /lulu-service`: Returns a simple JSON response.
+
+## Managing project with poetry
+
+1. Install a new module
+    ```bash
+    poetry add <module-name>
+    ```
+
+2. Remove a module
+    ```bash
+    poetry remove <module-name>
+    ```
+
+3. Update a module
+    ```bash
+    poetry update <module-name>
+    ```
+
+4. Running commands
+    ```bash
+    poetry run <command>
+    ```
 
 ## License
 
