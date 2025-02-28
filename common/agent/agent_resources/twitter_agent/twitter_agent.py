@@ -57,8 +57,6 @@ class TwitterAgent:
 
         graph.add_edge(START, "search_google")
         graph.add_edge("search_google", "write_tweet")
-        # graph.add_edge(START, "enhance_prompt")
-        # graph.add_edge("write_tweet", "enhance_prompt")
         graph.add_edge("write_tweet", "art_generate")
         graph.add_edge("write_tweet", "blank_node")
         graph.add_edge("blank_node", "post_tweet")
